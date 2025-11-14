@@ -1,0 +1,414 @@
+{
+  "name": "Single & Multi user Telegram Chatbot - 13/11/2025",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Based on the below text , please respond politely\n\ntext : {{ $json.message.text }}\n\nlimit the response in 100 tokens\n",
+        "options": {
+          "systemMessage": "Give the response as you are a great intellectual and having 35 years old who gives simple and clear answer",
+          "passthroughBinaryImages": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -624,
+        -224
+      ],
+      "id": "3031086e-f5a7-4f00-965a-15630e84ba06",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -624,
+        0
+      ],
+      "id": "70ecb6cc-4fa6-4cbe-a648-b7654bf41da9",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sWMoEeaQAHoU8vno",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -528,
+        160
+      ],
+      "id": "de7a86c8-bbd6-4818-a36b-97024eddbf78",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -1680,
+        0
+      ],
+      "id": "c1e4ed61-8620-4a8b-88b2-fb448ebc0e00",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "sWMoEeaQAHoU8vno",
+          "name": "Unnamed credential"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -1584,
+        160
+      ],
+      "id": "724bfb39-5be5-4d89-abdc-e08faef8f00d",
+      "name": "Simple Memory1"
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1920,
+        -208
+      ],
+      "id": "6c604569-7e56-46b4-8c63-41971fb7dae5",
+      "name": "Telegram Trigger on message",
+      "webhookId": "aab10632-b9f6-4758-a21b-a64b9964613d",
+      "credentials": {
+        "telegramApi": {
+          "id": "yDWurviexReK9Ft2",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -1056,
+        -208
+      ],
+      "id": "ec58042d-ba9e-4749-8a56-bad4c2a308f6",
+      "name": "Telegram Trigger on message ",
+      "webhookId": "aab10632-b9f6-4758-a21b-a64b9964613d",
+      "credentials": {
+        "telegramApi": {
+          "id": "yDWurviexReK9Ft2",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "78faede3-a143-43ce-9448-9952b7008c33",
+              "leftValue": "={{ $json.message.chat.id }}",
+              "rightValue": 1294510064,
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -832,
+        -208
+      ],
+      "id": "6f799779-1aa3-4076-8919-b2b03f7f2e52",
+      "name": "checking the Authorized user or not"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger on message ').item.json.message.chat.id }}",
+        "text": "Take the subscription for usage",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -912,
+        32
+      ],
+      "id": "fe9d35d5-e96d-4b2e-b69a-6700218e36ea",
+      "name": "Notify to get Authorized",
+      "webhookId": "59fd3aa7-471a-415f-af7c-2d0c89cfe267",
+      "credentials": {
+        "telegramApi": {
+          "id": "yDWurviexReK9Ft2",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger on message ').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -288,
+        -224
+      ],
+      "id": "137f32ef-9ef4-4d99-a13d-6c80fdf1280f",
+      "name": "Sends Replay to the Query",
+      "webhookId": "59fd3aa7-471a-415f-af7c-2d0c89cfe267",
+      "credentials": {
+        "telegramApi": {
+          "id": "yDWurviexReK9Ft2",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger on message').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -1344,
+        -208
+      ],
+      "id": "0f611b7b-b1b1-4920-81f7-46c636d68559",
+      "name": "Replay to the Query",
+      "webhookId": "59fd3aa7-471a-415f-af7c-2d0c89cfe267",
+      "credentials": {
+        "telegramApi": {
+          "id": "yDWurviexReK9Ft2",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Based on the below text , please respond politely\n\ntext : {{ $json.message.text }}\n\nlimit the response in 100 tokens\n",
+        "options": {
+          "systemMessage": "Give the response as you are a great intellectual and having 35 years old who gives simple and clear answer",
+          "passthroughBinaryImages": true
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -1680,
+        -208
+      ],
+      "id": "bb620187-e1cd-4155-8517-73647987f9ec",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "content": "# Chat bot for chating with a Single and Multiple users .\n",
+        "height": 720,
+        "width": 848,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1984,
+        -368
+      ],
+      "typeVersion": 1,
+      "id": "5f47e67f-301f-496d-9ee4-e64132a140d6",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "# Chat bot for chating with only Authorized Users.",
+        "height": 720,
+        "width": 1056,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1120,
+        -368
+      ],
+      "typeVersion": 1,
+      "id": "f852921f-a688-4cfc-b7d3-98f0d27b8dae",
+      "name": "Sticky Note1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Sends Replay to the Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory1": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger on message": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram Trigger on message ": {
+      "main": [
+        [
+          {
+            "node": "checking the Authorized user or not",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "checking the Authorized user or not": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Notify to get Authorized",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Replay to the Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "4536de16-9c85-409c-a1c0-7381369a87b3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "69218a4a713fe483ed9463e4d9ee7c6fb92bc5d6ba37518d0af6f3f8dbc83f41"
+  },
+  "id": "CKfCCVnxzJWxaEzm",
+  "tags": []
+}
